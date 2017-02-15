@@ -1,0 +1,552 @@
+<?xml version="1.0" encoding="utf-8" ?>
+	<openerp>
+		<data>
+		<!-- Inherits Project form view to add new statusbar, new text fields and change the placeholder name -->
+    		<record model="ir.ui.view" id="inherited_project_view_form">
+				<field name="name">inherited.project.view.form</field>
+				<field name="model">project.project</field>
+				<field name="inherit_id" ref="project.edit_project"/> 
+				<field name="arch" type="xml">
+					
+					
+				 	<!--<xpath expr="//header" position="replace">
+						<header>
+							<field name="state" widget="statusbar" clickable="True"/>
+						</header>
+					</xpath> --> 
+					
+					<xpath expr="//button[@name='toggle_active']" position="attributes">
+						<attribute name="invisible">1</attribute>
+					</xpath>
+					
+					<field name="name" position="attributes">
+						<attribute name="placeholder">File Name</attribute>
+					</field>
+					
+					<xpath expr="//field[@name='name']" position="after">
+						<group>
+							<field name="x_refno"/>
+							<field name="department"/>
+						</group>
+					</xpath>
+				</field>
+			</record>
+			<record model='ir.actions.act_window' id='loc_doc_inref_no_act'>
+            	<field name="name">Documents</field>
+            	<field name="res_model">document.customer</field>
+            	<field name="view_type">form</field>
+           		<field name="view_mode">tree,form</field>
+		<field name="context">{'search_default_group_file_id': 1}</field>
+		<field name="domain">[('loc_check','=',1)]</field>
+            	<field name="help" type="html">
+              		<p class="oe_view_nocontent_create">
+                		Click to create a new Document for this Folder.
+              		</p>              		
+            	</field>
+        	</record>
+			
+			
+			<record model='ir.actions.act_window' id='customer_files_details_act'>
+            	<field name="name">NEW DOCUMENTS</field>
+            	<field name="res_model">document.customer</field>
+            	<field name="view_type">form</field>
+           		<field name="view_mode">tree,form</field>
+		<field name="domain">[('dept_check','=',1)]</field>
+            	<field name="help" type="html">
+              		<p class="oe_view_nocontent_create">
+                		Click to create a new Document for this Folder.
+              		</p>
+            	</field>
+        	</record>
+        	
+			<record model='ir.actions.act_window' id='customer_files_3_details_act'>
+            	<field name="name">Incoming Documents</field>
+            	<field name="res_model">document.customer</field>
+            	<field name="view_type">form</field>
+           		<field name="view_mode">tree,form</field>
+           		<field name="context">{'search_default_file_id': [active_id], 'default_file_id': active_id}</field>
+            	<field name="help" type="html">
+              		<p class="oe_view_nocontent_create">
+                		Click to create a new Document for this Folder.
+              		</p>
+            	</field>
+        	</record>
+        
+        	<record model='ir.actions.act_window' id='customer_files_2_details_act'>
+            	<field name="name">Incoming Documents</field>
+            	<field name="res_model">document.customer</field>
+            	<field name="view_type">form</field>
+           		<field name="view_mode">tree,form</field>
+           		<field name="context">{'search_default_name': [active_id], 'default_name': active_id}</field>
+            	<field name="help" type="html">
+              		<p class="oe_view_nocontent_create">
+                		Click to create a new Document for this partner.
+              		</p>
+            	</field>
+        	</record>
+        
+		
+			<record model="ir.ui.view" id="customer_files_details_view">
+				<field name="name">customer.files.details.view</field>
+            	<field name="model">document.customer</field>
+            	<field name="arch" type="xml">
+                	<form string="Customer">
+                		<sheet>
+                				<h1 class="mt0">
+                        			<field name="sub_name" readonly="1" class="oe_inline, oe_read_only"/>
+                    			</h1>
+                				<group col="2" name="group_top">
+                					<group name="top_left">
+                						<field name="name"/>
+                						<field name="res_name"/>
+                						<field name="ref_nos"/>
+                						<field name="x_doccount"/>
+                						<field name="x_department" />
+                						<field name="x_description"/>
+                						<field name="x_contact" />
+                						<field name="x_signed"/>
+								<field name="doc_location"/>
+                						<!-- <field name="dept_flag"/>
+                						<field name="dept_hold"/>  -->            					
+                					</group>
+                					<group name="top_right">
+                						<field name="main_filename" invisible="1"/>
+                                		<field name="main_fileget" filename="main_filename"/>
+                                		<field name="x_mainfolder"/>
+                                		<field name="file_id" domain="[('project_id','=',x_mainfolder)]" on_change="my_onchange_function(x_department)"/>
+                                		<field name="x_date"/>
+                                		<field name="doc_date"/>
+                                		<field name="x_remarks"/>
+                                		<field name="x_dummy" invisible="1"/>
+						<field name="loc_check" invisible="1"/>
+						<field name="dept_check" invisible="1"/>
+                                		
+                					</group>
+                				</group>
+							<notebook colspan="2">
+                        		<page string="Other Documents">
+                            		<field name="customer_line_ids" nolabel="1" widget="one2many_list">
+                                		<tree editable="bottom">
+                                    		<field name="x_date"/>
+                                    		<field name="x_filename" invisible="1"/>
+                                    		<field name="x_fileget" filename="x_filename"/>
+                                    		<field name="x_notes"/>
+										</tree>
+									</field>
+								</page>
+							</notebook>
+						</sheet>
+						<div class="oe_chatter">
+                    		<field name="message_follower_ids" widget="mail_followers" help="Follow this file to automatically track the events of this file."/>
+                    		<field name="message_ids" widget="mail_thread"/>
+                		</div>
+					</form>
+				</field>
+			</record>
+			
+			<record model="ir.ui.view" id="customer_files_details_tree">
+				<field name="name">customer.files.details.tree</field>
+            	<field name="model">document.customer</field>
+            	<field name="arch" type="xml">
+                	<tree string="Documents Records">
+                		<field name="sub_name"/>
+                    	<field name="name" />
+                    	<field name="file_id" />
+                    	<field name="main_filename" />
+                    	<field name="x_date"/>
+                		<field name="doc_location"/>
+               		</tree>
+            	</field>
+        	</record>
+		
+		
+			<record model="ir.ui.view" id="customer_files_details_search">
+				<field name="name">customer.files.details.search</field>
+            	<field name="model">document.customer</field>
+            	<field name="arch" type="xml">
+                	<search string="Documents Records">
+                    	<field name="name" filter_domain="['|', ('name','ilike',self),('file_id','ilike',self)]" />
+                    	<field name="file_id"/>
+                    	<field name="res_name"/>
+                    	<seperator>
+                    		<filter string="Followed by Me" domain="[('message_is_follower','=',True)]"/>
+                    	</seperator>
+			<group expand="1" string="Group By..">
+				<filter string="Folder Name" icon="terp-partner" domain="[]" context="{'group_by':'file_id'}"/>
+            		</group>
+               		</search>
+            	</field>
+        	</record>
+        	
+        	
+        	
+        	<!-- Out Going files begins here -->
+        	
+        	<record model='ir.actions.act_window' id='outgoing_files_details_act'>
+            	<field name="name">Ougoing Documents</field>
+            	<field name="res_model">document.outgoing</field>
+            	<field name="view_type">form</field>
+           		<field name="view_mode">tree,form</field>
+            	<field name="help" type="html">
+              		<p class="oe_view_nocontent_create">
+                		Click to create a new Ougoing file here.
+              		</p>
+            	</field>
+        	</record>
+        	
+        	<record model='ir.actions.act_window' id='outgoing_files_2_details_act'>
+            	<field name="name">Ougoing Documents</field>
+            	<field name="res_model">document.outgoing</field>
+            	<field name="view_type">form</field>
+           		<field name="view_mode">tree,form</field>
+           		<field name="context">{'search_default_con_name': [active_id], 'default_con_name': active_id}</field>
+            	<field name="help" type="html">
+              		<p class="oe_view_nocontent_create">
+                		Click to create a new Ougoing file here.
+              		</p>
+            	</field>
+        	</record>
+        	
+        	<record model='ir.ui.view' id='out_going_file_form'>
+        		<field name="name">out.going.file.form</field>
+        		<field name="model">document.outgoing</field>
+        		<field name="arch" type="xml">
+        			<form>
+        				<sheet>
+        					<h1 class="mt0">
+                        		<field name="outsub_name" readonly="1" class="oe_inline, oe_read_only"/>
+                    		</h1>
+        					<group col="2" name="group_top">
+        						<group name="group_left">
+        							<field name="con_name"/>
+        							<field name="name"/>
+                					<field name="xref_nos"/>
+        							<field name="date"/>
+        							<field name="signed"/>
+        							<field name="summary"/>
+        							<field name="pic_date"/>
+        						</group>
+        						<group name="group_right">
+        							<field name="out_file" filename="out_filename"/>
+        							<field name="out_filename" invisible="1"/>
+        							<field name="cont_amt"/>
+        							<field name="cont_terms"/>
+        							<field name="xx_contact"/>
+        							<field name="tt_department"/>
+        							<field name="xx_dummy" invisible="1"/>
+        						</group>
+        					</group>
+        					<notebook colspan="2">
+                        		<page string="More Outgoing Documents">
+                            		<field name="outgoing_line_ids" nolabel="1" widget="one2many_list">
+                                		<tree editable="bottom">
+                                    		<field name="xx_date"/>
+                                    		<field name="xx_filename" invisible="1"/>
+                                    		<field name="xx_fileget" filename="xx_filename"/>
+                                    		<field name="xx_notes"/>
+										</tree>
+									</field>
+								</page>
+							</notebook>
+        				</sheet>
+        				<div class="oe_chatter">
+                    		<field name="message_follower_ids" widget="mail_followers" help="Follow this file to automatically track the events of this file."/>
+                    		<field name="message_ids" widget="mail_thread"/>
+                		</div>
+        			</form>
+        		</field>
+        	</record>
+        	
+        	<record model="ir.ui.view" id="out_going_file_tree">
+				<field name="name">out.going.file.tree</field>
+            	<field name="model">document.outgoing</field>
+            	<field name="arch" type="xml">
+                	<tree string="Outgoing Records">
+                		<field name="outsub_name"/>
+                    	<field name="name" />
+                    	<field name="con_name"/>
+                    	<field name="date" />
+                    	<field name="out_filename" />
+               		</tree>
+            	</field>
+        	</record>
+		
+		
+			<record model="ir.ui.view" id="out_going_file_search">
+				<field name="name">out.going.file.search</field>
+            	<field name="model">document.outgoing</field>
+            	<field name="arch" type="xml">
+                	<search string="Ougoing Records">
+                    	<field name="name"/>
+                    	<field name="con_name" filter_domain="['|', ('con_name','ilike',self),('con_name','ilike',self)]" />
+                    	<seperator>
+                    		<filter string="Followed by Me" domain="[('message_is_follower','=',True)]"/>
+                    	</seperator>
+               		</search>
+            	</field>
+        	</record>
+        	
+        	
+			
+			<!-- Folder Menu Begins Here -->
+			
+			<record model='ir.actions.act_window' id='folder_details_act'>
+            	<field name="name">Folders</field>
+            	<field name="res_model">document.folder</field>
+            	<field name="view_type">form</field>
+           		<field name="view_mode">tree,form</field>
+            	<field name="help" type="html">
+              		<p class="oe_view_nocontent_create">
+                		Click to create a new Folder.
+              		</p>
+            	</field>
+        	</record>
+			
+			<record model='ir.actions.act_window' id='folder_2_details_act'>
+            	<field name="name">Folders</field>
+            	<field name="res_model">document.folder</field>
+            	<field name="view_type">form</field>
+           		<field name="view_mode">tree,form</field>
+           		<field name="context">{'search_default_project_id': [active_id], 'default_project_id': active_id}</field>
+            	<field name="help" type="html">
+              		<p class="oe_view_nocontent_create">
+                		Click to create a new Folder.
+              		</p>
+            	</field>
+        	</record>
+			
+			<record model='ir.ui.view' id='folder_details_form'>
+        		<field name="name">folder.details.form</field>
+        		<field name="model">document.folder</field>
+        		<field name="arch" type="xml">
+        			<form>
+        				<sheet>
+        					<div class="oe_button_box" name="button_box" groups="base.group_user">
+        						<button type="action"
+            						groups="base.user_root,base.group_user" 
+            						class="oe_stat_button" 
+            						icon="fa-pencil-square-o"
+            						context="{'search_default_file_id': active_id}"
+            						name="%(customer_files_3_details_act)d"
+            						help="Shows all the customer records for this File">
+            						<field name="document_log" widget="statinfo" string="Documents"/>
+								</button>
+        					</div>
+        					<div class="oe_title">
+                        		<h1>
+                            		<field name="name" placeholder="Folder Name"/>
+                        		</h1>
+                        	</div>
+        					<group col="2" name="group_top">
+        						<group name="group_left">
+        							<field name="ref_no"/>
+        							<field name="project_id"/>
+        						</group>
+        						<group name="group_right">
+        							<field name="description"/>
+        							<field name="f_department"/>
+        						</group>
+        					</group>
+        				</sheet>
+        				<div class="oe_chatter">
+                    		<field name="message_follower_ids" widget="mail_followers" help="Follow this file to automatically track the events of this file."/>
+                    		<field name="message_ids" widget="mail_thread"/>
+                		</div>
+        			</form>
+        		</field>
+        	</record>
+        	
+        	<record model="ir.ui.view" id="folder_details_tree">
+				<field name="name">folder.details.tree</field>
+            	<field name="model">document.folder</field>
+            	<field name="arch" type="xml">
+                	<tree string="Folders">
+                    	<field name="name" />
+                    	<field name="description"/>
+               		</tree>
+            	</field>
+        	</record>
+        	
+        	<record model="ir.ui.view" id="folder_details_search">
+				<field name="name">folder.details.search</field>
+            	<field name="model">document.folder</field>
+            	<field name="arch" type="xml">
+                	<search string="Folder">
+                    	<field name="name"/>
+                    	<field name="project_id" filter_domain="['|', ('project_id','ilike',self),('project_id','ilike',self)]" />
+                    	<seperator>
+                    		<filter string="Followed by Me" domain="[('message_is_follower','=',True)]"/>
+                    	</seperator>
+               		</search>
+            	</field>
+        	</record>
+        	
+        	
+        	<!-- Document Reference No models start here -->
+        	
+        	<record model='ir.actions.act_window' id='doc_inref_no_act'>
+            	<field name="name">Document Reference No</field>
+            	<field name="res_model">document.ref.no</field>
+            	<field name="view_type">form</field>
+           		<field name="view_mode">tree,form</field>
+            	<field name="help" type="html">
+              		<p class="oe_view_nocontent_create">
+                		Click to create a reference number.
+              		</p>
+            	</field>
+        	</record>
+			
+			
+			<record model='ir.ui.view' id='reference_no_form_view'>
+        		<field name="name">reference.no.form.view</field>
+        		<field name="model">document.ref.no</field>
+        		<field name="arch" type="xml">
+        			<form>
+        				<sheet>
+        					<group col="2" name="group_top">
+        						<group name="group_left">
+        							<field name="xref_no"/>
+        							<field name="folder"/>
+ 		  						</group>
+        						<group name="group_right">
+        							<field name="xx_description"/>
+        						</group>
+        					</group>
+        				</sheet>
+        			</form>
+        		</field>
+        	</record>
+        	
+        	<!-- Folder Refernce No models start here -->
+        	
+        	<record model='ir.actions.act_window' id='folder_inref_no_act'>
+            	<field name="name">Folder Reference No</field>
+            	<field name="res_model">folder.ref.no</field>
+            	<field name="view_type">form</field>
+           		<field name="view_mode">tree,form</field>
+            	<field name="help" type="html">
+              		<p class="oe_view_nocontent_create">
+                		Click to create a reference number.
+              		</p>
+            	</field>
+        	</record>
+			
+			
+			<record model='ir.ui.view' id='docreference_no_form_view'>
+        		<field name="name">docreference.no.form.view</field>
+        		<field name="model">folder.ref.no</field>
+        		<field name="arch" type="xml">
+        			<form>
+        				<sheet>
+        					<group col="2" name="group_top">
+        						<group name="group_left">
+        							<field name="folderxref_no"/>
+        							<field name="xproject"/>
+ 		  						</group>
+        						<group name="group_right">
+        							<field name="folder_description"/>
+        						</group>
+        					</group>
+        				</sheet>
+        			</form>
+        		</field>
+        	</record>
+        	
+        	<!-- Incoming document reference model starts here -->
+        	
+        	<record model='ir.actions.act_window' id='doc_outref_no_act'>
+            	<field name="name">Outgoing Document Reference No</field>
+            	<field name="res_model">outdoc.ref.no</field>
+            	<field name="view_type">form</field>
+           		<field name="view_mode">tree,form</field>
+            	<field name="help" type="html">
+              		<p class="oe_view_nocontent_create">
+                		Click to create a reference number.
+              		</p>
+            	</field>
+        	</record>
+			
+			
+			<record model='ir.ui.view' id='outdoc_ref_no_form_view'>
+        		<field name="name">outdoc.ref.no.form.view</field>
+        		<field name="model">outdoc.ref.no</field>
+        		<field name="arch" type="xml">
+        			<form>
+        				<sheet>
+        					<group col="2" name="group_top">
+        						<group name="group_left">
+        							<field name="outxref_no"/>
+        							<field name="outproject"/>
+ 		  						</group>
+        						<group name="group_right">
+        							<field name="out_description"/>
+        						</group>
+        					</group>
+        				</sheet>
+        			</form>
+        		</field>
+        	</record>
+        	
+			
+			<!-- Menu Declaration goes here -->
+			
+			<menuitem id="menu_project_document" name="Documents" parent="base.menu_main_pm"
+            sequence="5" groups="base.user_root,base.group_user"/>
+            
+            <menuitem id="menu_project_folder" name="Folder" parent="base.menu_main_pm"
+            sequence="7" groups="base.user_root,base.group_user"/>
+            
+            <menuitem id="menu_project_ref" name="References" parent="base.menu_main_pm"
+            sequence="9" groups="base.user_root,base.group_user"/>
+			
+			<menuitem action="doc_outref_no_act"
+						name="Outgoing" 
+						parent="menu_project_ref" 
+						id="doc_outref_no_menu"
+						groups="base.user_root,base.group_user" />
+			
+			<menuitem action="doc_inref_no_act"
+						name="Incoming" 
+						parent="menu_project_ref" 
+						id="doc_inref_no_menu"
+						groups="base.user_root,base.group_user" />
+						
+			
+			<menuitem action="folder_inref_no_act"
+						name="Folder References"
+						parent="menu_project_ref" 
+						id="folder_inref_no_menu"
+						groups="base.user_root,base.group_user" />
+			
+			<menuitem action="folder_details_act"
+						name="Folders"
+						parent="menu_project_folder" 
+						id="folder_details_menu"
+						groups="base.user_root,base.group_user" />
+			
+			<menuitem action="customer_files_details_act"
+						sequence="1"
+						name="New Incoming Documents" 
+						parent="menu_project_document" 
+						id="customer_files_details_menu"
+						groups="base.user_root,base.group_user" />
+			
+			<menuitem action="outgoing_files_details_act"
+						sequence="3"
+						name="Outgoing Documents"
+						parent="menu_project_document"
+						id="outgoing_files_details_menu"
+						groups="base.user_root,base.group_user" />
+
+			<menuitem action="loc_doc_inref_no_act"
+						sequence="5"
+						name="Documents in Folders" 
+						parent="menu_project_document" 
+						id="loc_doc_inref_no_menu"
+						groups="base.user_root,base.group_user" />
+			
+			
+			
+		</data>
+	</openerp>
+		

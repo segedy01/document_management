@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+	<openerp>
+		<data>
+		
+			<!-- Add Files Smart button to Res Partner Form view -->
+			<record model="ir.ui.view" id="inherited_partner_view_form_files">
+				<field name="name">inherited.partner.view.form.files</field>
+				<field name="model">res.partner</field>
+				<field name="inherit_id" ref="base.view_partner_form"/> 
+				<field name="arch" type="xml">
+				 <!--Customer Smart Button Goes Here -->
+					<xpath expr="//div[@name='button_box']" position="inside">
+            			<button type="action"
+            				groups="base.user_root,base.group_user" 
+            				class="oe_stat_button" 
+            				icon="fa-pencil-square-o"
+            				context="{'search_default_name': active_id}"
+            				name="%(customer_files_2_details_act)d"
+            				help="Shows all the customer records for this File">
+            				<field name="file_log" widget="statinfo" string="Incoming Document"/>
+						</button>
+					</xpath>
+				</field>
+			</record>
+        	
+        	<!-- Add Customers Smart button to Project Form view -->
+			<record model="ir.ui.view" id="inherited_project_view_form_files">
+				<field name="name">inherited.project.view.form.files</field>
+				<field name="model">project.project</field>
+				<field name="inherit_id" ref="project.edit_project"/> 
+				<field name="arch" type="xml">
+				<!-- Customer Smart Button Goes Here -->
+					<xpath expr="//div[@name='button_box']" position="inside">
+            			<button type="action"
+            				groups="base.user_root,base.group_user"
+            				class="oe_stat_button" 
+            				icon="fa-pencil-square-o"
+            				context="{'search_default_project_id': active_id}"
+            				name="%(folder_2_details_act)d"
+            				help="Shows all the customer records for this File">
+            				<field name="folder_log" widget="statinfo" string="Folders"/>
+						</button>
+					</xpath>
+					
+					<xpath expr="//button[@name='attachment_tree_view']" position="attributes">
+						<attribute name="invisible">1</attribute>
+					</xpath>
+				</field>
+			</record>
+			
+			
+			<record model="ir.ui.view" id="inherited_partner_view_form_outgoingfiles">
+				<field name="name">inherited.partner.view.form.files</field>
+				<field name="model">res.partner</field>
+				<field name="inherit_id" ref="base.view_partner_form"/> 
+				<field name="arch" type="xml">
+				 <!--Customer Smart Button Goes Here -->
+					<xpath expr="//div[@name='button_box']" position="inside">
+            			<button type="action"
+            				groups="base.user_root,base.group_user" 
+            				class="oe_stat_button" 
+            				icon="fa-pencil-square-o"
+            				context="{'search_default_con_name': active_id}"
+            				name="%(outgoing_files_2_details_act)d"
+            				help="Shows all the customer records for this File">
+            				<field name="outfile_log" widget="statinfo" string="Outgoing Documents"/>
+						</button>
+					</xpath>
+					<xpath expr="//field[@name='website']" position="after">
+						<field name="x_dept_res"/>
+					</xpath>
+				</field>
+			</record>
+			
+
+		</data>
+	</openerp>

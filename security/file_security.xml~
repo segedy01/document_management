@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+        <record model="ir.module.category" id="module_category_name_test">
+            <field name="name">Management</field> 
+            <field name="sequence">7</field>
+        </record>
+
+        <record id="group_name_test_user" model="res.groups">
+            <field name="name">User</field>
+            <field name="category_id" ref="module_category_name_test"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="group_name_test_manager" model="res.groups">
+            <field name="name">Manager</field>
+            <field name="category_id" ref="module_category_name_test"/>
+            <field name="implied_ids" eval="[(4, ref('group_name_test_user'))]"/>
+            <field name="users" eval="[(4, ref('base.user_root'))]"/>
+        </record>
+        
+    </data>
+    	<data noupdate="1">
+    	<record id="document_user_rule" model="ir.rule">
+        	<field name="name">Department List Rule</field>
+        	<field name="model_id" ref="model_document_customer"/>
+        	<field eval="True" name="global"/>
+        	<field name="domain_force">['|', ('x_department.name','=',user.x_dept_res.name),,('doc_location','=',user.x_dept_res.name)]</field>
+        	<field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    	</record>
+    	
+    	<record id="outdocument_user_rule" model="ir.rule">
+        	<field name="name">Department List Rule</field>
+        	<field name="model_id" ref="model_document_outgoing"/>
+        	<field eval="True" name="global"/>
+        	<field name="domain_force">[('tt_department.name','=',user.x_dept_res.name)]</field>
+        	<field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    	</record>
+    	
+    	<record id="folder_user_rule" model="ir.rule">
+        	<field name="name">Folder List Rule</field>
+        	<field name="model_id" ref="model_document_folder"/>
+        	<field eval="True" name="global"/>
+        	<field name="domain_force">[('f_department.name','=',user.x_dept_res.name)]</field>
+        	<field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    	</record>
+	</data>
+</openerp>
+
+    

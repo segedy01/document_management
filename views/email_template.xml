@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data noupdate="1">
+
+        <!--Email template-->
+        <record id="email_template_customer_auto" model="email.template">
+            <field name="name">Send auto email</field>
+            <field name="email_from">${'olusegun.adesanya@gmail.com'}</field>
+            <field name="subject">New Customer created ${document.customer}</field>
+            <field name="email_to">${'adesanyaolusegun@gmail.com'}</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="auto_delete" eval="True"/>
+            <field name="lang">${object.lang}</field>
+            <field name="body_html"><![CDATA[
+                """ 
+                Write here a body of email using HTML tag.....
+                """            
+            ]]></field>
+        </record>
+  
+  </data>
+</openerp>

@@ -1,0 +1,130 @@
+	<openerp>
+		<data>
+		
+			   <record model="res.groups" id="group_invisible">
+        			<field name="name">Hidden items</field>
+    			</record>
+			
+			<!-- changing menu name from PROJECTS to FILES -->
+			<record model="ir.ui.menu" id="base.menu_main_pm">
+      			<field name="name">DMS</field>
+			</record>
+    		
+    		<!-- changing sub-menu name from PROJECTS to FILES -->
+    		<record id="project.open_view_project_all" model="ir.actions.act_window">
+            	<field name="name">DMS</field>
+            </record>
+            
+            <record model="res.groups" id="group_invisible">
+        		<field name="name">Hidden items</field>
+    		</record>
+            
+            <!-- changing menu name from TASKS to FILES -->
+            <record model="ir.ui.menu" id="project.menu_action_view_task">
+            	<field name="name">Todo</field>
+            	<field name="groups_id" eval="[(6,0,[ref('group_invisible')])]"/>
+            </record>
+            
+            <record model="ir.ui.menu" id="base.menu_project_report">
+            	<field name="groups_id" eval="[(6,0,[ref('group_invisible')])]"/>
+            </record>
+            
+            <!-- changing sub-menu name from TASKS to FILES -->
+            <record id="project.action_view_task" model="ir.actions.act_window">
+            	<field name="name">Todo</field>
+            </record>
+  
+  		
+        	<!-- Inherit project kanban view to add customer/partners,
+        		 Change Task to Todo and to bring settings out of more -->
+        	<record model="ir.ui.view" id="inherited_kanban_view">
+        		<field name="name">inherited.kanban.view</field>
+        		<field name="model">project.project</field>
+        		<field name="inherit_id" ref="project.view_project_kanban"/>
+        		<field name="arch" type="xml">
+        		<xpath expr="//field[@name='doc_count']" position="after">
+            			<field name="folder_log"/>
+				<field name="doc_log"/>
+            		</xpath>
+            	
+            		<xpath expr="//div[@class='o_project_kanban_boxes']" position="inside">
+            			<a t-if="record.folder_log.raw_value" class="o_project_kanban_box" name="%(folder_details_act)d" type="action">
+                    		<span class="o_value"><t t-esc="record.folder_log.value"/></span>
+                        	<span class="o_label">Folder</span></a>
+
+
+            			<a t-if="record.doc_log.raw_value" class="o_project_kanban_box">
+                    		<span class="o_value"><t t-esc="record.doc_log.value"/></span>
+                        	<span class="o_label">Documents</span></a>
+                	</xpath>
+                
+                	<xpath expr="//t[@t-esc='record.label_tasks.value']" position="replace">
+            			<span> Todo </span>
+                	</xpath>
+                
+                	<xpath expr="//div[@class='o_project_kanban_manage']" position="inside">
+                		<div groups="project.group_project_manager">
+							<a type="open">Settings</a>
+                		</div>
+                	</xpath>
+                	<xpath expr="//field[@name='doc_count']" position="after">
+            			<field name="folder_log"/>
+            		</xpath>
+			<xpath expr="//div[@class='o_kanban_card_manage_section o_kanban_manage_reports']" position="attributes">
+				<attribute name="invisible">True</attribute>
+                	</xpath> 
+			
+			<xpath expr="//div[@t-if='record.use_tasks.raw_value']" position="replace">
+				<a type="open"></a>
+			</xpath>
+                	
+                	<!-- <xpath expr="//field[@name='user_id']" position="after">
+                		<field name="pro_member"/>
+                	</xpath> -->         
+            	</field>
+			</record>
+			
+			
+			
+		
+		
+			<record model="ir.ui.view" id="inherited_project_view_for_todo">
+				<field name="name">inherited.project.view.for.todo</field>
+				<field name="model">project.task</field>
+				<field name="inherit_id" ref="project.view_task_form2"/> 
+				<field name="arch" type="xml">
+					<field name="name" position="attributes">
+						<attribute name="placeholder">Todo Title...</attribute>
+					</field>
+					
+					<field name="project_id" position="attributes">
+						<attribute name="readonly">True</attribute>
+					</field>
+				</field>
+			</record>
+			
+			<record model="ir.ui.view" id="inherited_ir_attachment_tree">
+				<field name="name">inherited.ir.attachment.tree</field>
+				<field name="model">ir.attachment</field>
+				<field name="inherit_id" ref="base.view_attachment_tree"/> 
+				<field name="arch" type="xml">
+					<field name="res_field" position="attributes">
+						<attribute name="invisible">1</attribute>
+					</field>
+					
+					<field name="res_model" position="attributes">
+						<attribute name="invisible">1</attribute>
+					</field>
+					
+					<field name="res_id" position="replace">
+						<field name="res_name"/>
+					</field>
+				</field>
+			</record>
+			
+			
+			
+	
+	
+  </data>
+</openerp>
