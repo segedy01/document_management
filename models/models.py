@@ -118,7 +118,7 @@ class main_customer(models.Model):
     @api.onchange('x_department','doc_location')
     def message_depart_onchange(self):
         username = 'sege01'
-        password = 'segunsco'
+        password = '*********'
         msg_type = '0'
         dlr = '0'
         sender = 'DMS'
@@ -133,45 +133,45 @@ class main_customer(models.Model):
 #             
 #    
 #   working email code          
-#     @api.onchange('x_department','doc_location') 
-#     def req_aut(self):
-#         cursor = self._cr
-#         user = self._uid
-#         subject="New Document from SA office"
-#         body="Neccessary Messages goes here"
-#         message_obj = self.pool.get('mail.mail')
-#         if self.x_department:    
-#             mail_rec = self.env['res.partner']
-#             for records in mail_rec.search([('x_dept_res.name','=',self.x_department.name)]):
-#                 email_to = records.email
-#                 msg_vals = {
-#                     'subject': subject,
-#                     'body_text': False,
-#                     'body_html': body,
-#                     'email_from': 'olusegun.adesanya@gtsng.com',
-#                     'email_to': email_to,
-#                     'subtype': 'html',
-#                     'state': 'outgoing',
-#                     }
-#                 msg_id = message_obj.create(cursor, user, msg_vals, context=None)
-#                 if msg_id:
-#                     message_obj.send(cursor, user, [msg_id], context=None) 
+     @api.onchange('x_department','doc_location') 
+     def req_aut(self):
+         cursor = self._cr
+         user = self._uid
+         subject="New Document from SA office"
+         body="Neccessary Messages goes here"
+         message_obj = self.pool.get('mail.mail')
+         if self.x_department:    
+             mail_rec = self.env['res.partner']
+             for records in mail_rec.search([('x_dept_res.name','=',self.x_department.name)]):
+                 email_to = records.email
+                 msg_vals = {
+                     'subject': subject,
+                     'body_text': False,
+                     'body_html': body,
+                     'email_from': 'olusegun.adesanya@gtsng.com',
+                     'email_to': email_to,
+                     'subtype': 'html',
+                     'state': 'outgoing',
+                     }
+                 msg_id = message_obj.create(cursor, user, msg_vals, context=None)
+                 if msg_id:
+                     message_obj.send(cursor, user, [msg_id], context=None) 
 
 
-#     @api.onchange('x_department','doc_location') 
-#     def notify_members(self):      
-#         cursor = self._cr
-#         user = self._uid
-#         thread_pool = self.pool.get('mail.thread')
-#         alert_rec = self.env['res.users']
-#         if self.x_department:
-#             for records in alert_rec.search([('x_dept_res.name','=',self.x_department.name)]):
-#                 parted = (4, records.partner_id.id)
-#                 post_vars = {'subject': "notification about order", 
-#                              'body': "Yes inform me as i belong to manfacture group", 
-#                              'partner_ids': parted}
-#                 print parted
-#             thread_pool.message_post(cursor, user, False,message_type="notification", subtype="mt_comment",context=None, **post_vars)
+     @api.onchange('x_department','doc_location') 
+     def notify_members(self):      
+         cursor = self._cr
+         user = self._uid
+         thread_pool = self.pool.get('mail.thread')
+         alert_rec = self.env['res.users']
+         if self.x_department:
+             for records in alert_rec.search([('x_dept_res.name','=',self.x_department.name)]):
+                 parted = (4, records.partner_id.id)
+                 post_vars = {'subject': "notification about order", 
+                              'body': "Yes inform me as i belong to manfacture group", 
+                              'partner_ids': parted}
+                 print parted
+             thread_pool.message_post(cursor, user, False,message_type="notification", subtype="mt_comment",context=None, **post_vars)
 
 
     @api.model
